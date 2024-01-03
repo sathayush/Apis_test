@@ -62,7 +62,7 @@ class TempleViewAll(APIView):
 
 class TemplePriorityView(APIView):
     def get(self,request):
-        templepriority=Temple_priority.objects.values() 
+        templepriority=templePriority.objects.values() 
         return JsonResponse(list(templepriority),safe=False)   
 
 
@@ -274,7 +274,7 @@ class GosdhalaViewDelete(generics.GenericAPIView):
     def delete(self, request, pk):
         try:
             # Get the existing Temple instance
-            goshala_instance = Temple.objects.get(pk=pk)
+            goshala_instance = Goshala_Model.objects.get(pk=pk)
             
 
             # Delete the instance
@@ -282,7 +282,7 @@ class GosdhalaViewDelete(generics.GenericAPIView):
 
             return Response({"message": "goashala deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-        except Temple.DoesNotExist:
+        except Event.DoesNotExist:
             # Handle the case where Temple with the specified code does not exist
             return JsonResponse({"error": "Error"}, status=404)        
         
@@ -298,39 +298,18 @@ class EventCategoryView(APIView):
     def get(self, request):
         categories = Event_Category.objects.values()
         return JsonResponse(list(categories), safe=False) 
-    
-
-# class EventView(generics.GenericAPIView):
-#     serializer_class = EventSerializer
-
-#     def get(self, request, Event_Category_Code):  # Update parameter name
-   
-#         events = Event.objects.filter(Event_Category_Code = Event_Category_Code).values()
-#         print(events, "1111111111111111111111")
-
-#         # Serialize the single object
-#         serializer = EventSerializer(events,many = True)
-
-#         # Return the serialized data as a JSON response
-#         return JsonResponse(serializer.data,safe=False)    
-
+       
 
 
 
 class EventView(generics.GenericAPIView):
     serializer_class = EventSerializer
+    queryset = Event.objects.all()  # Set the queryset attribute
 
     def get(self, request, Event_Category_Code):
-        # Filter queryset based on Event_Category_Code
-        events = Event.objects.filter(Event_Category_Code=Event_Category_Code)
-
-        # Serialize the queryset
-        serializer = EventSerializer(events, many=True)
-
-        # Return the serialized data as a JSON response
+        filtered_events = self.get_queryset().filter(Event_Category_Code=Event_Category_Code)
+        serializer = EventSerializer(filtered_events, many=True)
         return Response(serializer.data)
-
-
 
 
 
@@ -339,7 +318,110 @@ class EventViewAll(APIView):
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data) 
+    
 
+
+
+# POST #
+    
+
+
+class EventViewPost(generics.GenericAPIView):
+    serializer_class = EventSerializer
+
+    def post(self, request):
+        try:
+            serializer = EventSerializer(data=request.data)
+            print(serializer,"!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+            if serializer.is_valid():
+                v = serializer.save()
+                print(v,"2222222222222222222222222222222")
+                return Response({
+                    "message": "success",
+                    "data": EventSerializer(v).data,
+                    "status": status.HTTP_200_OK
+                })
+
+            return JsonResponse({
+                "message": "error",
+                "errors": serializer.errors,
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+
+        except Event.DoesNotExist:
+            return JsonResponse({"error": "error"}, status=404)
+        
+
+
+
+#put#
+
+
+
+class EventViewPut(generics.GenericAPIView):
+    serializer_class = EventSerializer
+
+    def put(self, request, Event_Code):
+        try:
+            # Get the existing Temple instance
+            a = Event.objects.get(pk=Event_Code)
+            print(a,"111111111111111111111111111111111111111")
+
+            # Deserialize the request data and update the instance
+            b = EventSerializer(a, data=request.data, partial=True)
+            print(b,"22222222222222222222222222222222222")
+
+            # Validate and save the updated data
+            if b.is_valid():
+                c = b.save()
+                return Response({
+                    "message": "success",
+                    "edit_data": b.data,  # Use the serializer to get the serialized data
+                    "result": EventSerializer(c).data,
+                    "status": status.HTTP_200_OK
+                })
+
+            return Response({
+                "message": "error",
+                "errors": b.errors,
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+
+        except Goshala_Model.DoesNotExist:
+            # Handle the case where Temple with the specified code does not exist
+            return Response({
+                "message": f"Event with code {Event_Code} does not exist",
+                "status": status.HTTP_404_NOT_FOUND
+            })    
+
+
+
+
+
+#Delete#
+        
+        
+
+class EventViewDelete(generics.GenericAPIView):
+    serializer_class = EventSerializer
+
+    def delete(self, request, pk):
+        try:
+            # Get the existing Temple instance
+            Event_instance = Event.objects.get(pk=pk)
+            
+
+            # Delete the instance
+            Event_instance.delete()
+
+            return Response({"message": "Events deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+        except Event.DoesNotExist:
+            # Handle the case where Temple with the specified code does not exist
+            return JsonResponse({"error": "Error"}, status=404)             
+            
+    
         
 
 

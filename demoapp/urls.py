@@ -19,6 +19,9 @@ urlpatterns = [
     path('EventCategoryView/', EventCategoryView.as_view(), name='EventCategoryView'),
     path('EventView/<str:Event_Category_Code>/', EventView.as_view(), name='EventView'),
     path('EventViewAll/', EventViewAll.as_view(), name='EventViewAll'),
+    path('EventViewPost/', EventViewPost.as_view(), name='EventViewPost'),
+    path('EventViewPut/<str:Event_Code>/', EventViewPut.as_view(), name='EventViewPut'),
+    path('EventViewDelete/<str:pk>/', EventViewDelete.as_view(), name='EventViewDelete'),
 
 
 ]

@@ -26,19 +26,19 @@ class templePriority(models.Model):
 
 
 class Temple(models.Model):
-    STATIC_CHOICES = [
-        ("None", "None"),
-        ("Ganesha", "Ganesha"),
-        ("Hanuman", "Hanuman"),
-        ("Jyothi Lingas", "Jyothi Lingas"),
-        ("Sakthi Peetas", "Sakthi Peetas"),
-    ]
-    PRIORITY_CHOICES = [
-        ("None", "None"),
-        ("High", "High"),
-        ("Medium", "Medium"),
-        ("Low", "Low"),
-    ]
+    # STATIC_CHOICES = [
+    #     ("None", "None"),
+    #     ("Ganesha", "Ganesha"),
+    #     ("Hanuman", "Hanuman"),
+    #     ("Jyothi Lingas", "Jyothi Lingas"),
+    #     ("Sakthi Peetas", "Sakthi Peetas"),
+    # ]
+    # PRIORITY_CHOICES = [
+    #     ("None", "None"),
+    #     ("High", "High"),
+    #     ("Medium", "Medium"),
+    #     ("Low", "Low"),
+    # ]
     STYLE_CHOICES = [
         ("_", "_"),
         ("N", "N"),
@@ -78,16 +78,6 @@ class Temple(models.Model):
         db_table = 'temple'
 
 
-
-
-class Temple_priority(models.Model):
-    Temple_priority_Code = models.CharField(max_length=10, primary_key=True)
-    Temple_priority_Name = models.CharField(max_length=100)
-    Temple_priority_Desc = models.TextField()
-
-    class Meta:
-        managed = False  # Set managed to False to prevent table creation/modification
-        db_table='temple_priority'        
 
 
 ############Goshala models################
@@ -166,6 +156,7 @@ class Event(models.Model):
     STATIC_CHOICES = [
         ("T", "T"),
         ("G", "G"),
+        ("N","N")
     ]
 
     Event_Code = models.CharField(max_length=50, primary_key=True)
@@ -174,7 +165,7 @@ class Event(models.Model):
     Event_Status = models.BooleanField()
     Event_Start = models.CharField(max_length=50,)
     Event_End = models.CharField(max_length=50,)
-    Tagged_Temple_Goshala_Code = models.CharField(max_length=50, choices=STATIC_CHOICES, default="T")
+    Tagged_Temple_Goshala_Code = models.CharField(max_length=50, choices=STATIC_CHOICES, default="N")
     Tagged_Code = models.CharField(max_length=50)
     Tagged_Geo_Site = models.CharField(max_length=255)
     Location_Code = models.CharField(max_length=50)
